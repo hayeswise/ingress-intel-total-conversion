@@ -329,7 +329,7 @@ for fn in glob.glob("plugins/*.user.js"):
             verbose and print("...os.path.makedirs(" + distDir + ")")
             os.makedirs(distDir)
         shutil.copy2(buildPath, distPath)
-        shutil.copy2(buildPath.replace('.user.js', '.meta.js'), distPath.replace('.user.js', '.meta.js'))
+        #shutil.copy2(buildPath.replace('.user.js', '.meta.js'), distPath.replace('.user.js', '.meta.js'))
         #jsdocFiles.append(os.path.join(cwd,os.path.join(outDir,fn)))
     else:
         verbose and print ("...no need to build since distribution is older than dependencies")
