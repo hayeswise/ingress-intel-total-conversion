@@ -181,7 +181,7 @@ def latestDependencyModTime(script):
         files = re.findall(pattern,script)
         for file in files:
             lastModDate = os.path.getmtime(file)
-            verbose and print ("...dependency " + file + " " + lastModText(lastModDate))
+            verbose and print ("   dependency " + file + " " + lastModText(lastModDate))
             if lastModDate > groupLastModDate:
                 groupLastModDate = lastModDate
     return groupLastModDate
@@ -239,26 +239,26 @@ outDir = os.path.join(buildRoot, buildName)
 
 if clean:
     verbose and print ("Cleaning directories")
-    for d in [outDir, distRoot, docRoot]:
+    for d in [outDir, distRoot]: #docRoot TODO: need to handle images
         if os.path.exists(d):
-            verbose and print("..." + d)
+            verbose and print("   " + d)
             for d, dirs, files in os.walk(d): # Thanks to rejax at http://stackoverflow.com/questions/36267807/python-recursively-remove-files-folders-in-a-directory-but-not-the-parent-direc
                 for name in files:
                     try:
                         os.remove(os.path.join(d,name))
                     except:
-                        print("...Error:", sys.exec_info()[0])
+                        print("   Error:", sys.exec_info()[0])
                 for name in dirs:
                     try:
                         shutil.rmtree(os.path.join(d,name))
                     except:
-                        print("...Error:", sys.exec_info()[0])
+                        print("   Error:", sys.exec_info()[0])
     for d, dirs, files in os.walk(buildRoot):
         for name in files:
             try:
                 os.remove(os.path.join(d,name))
             except:
-                print("...Error:", sys.exec_info()[0])
+                print("   Error:", sys.exec_info()[0])
     sys.exit(1);
 
 
@@ -291,6 +291,7 @@ updateUrl = distUrlBase and distUrlBase + '/total-conversion-build.meta.js' or '
 # TODO: Only rebuild if main or one of the dependencies has changed per file last modified date
 main = doReplacements(main,downloadUrl=downloadUrl,updateUrl=updateUrl)
 saveScriptAndMeta(main, outDir, 'total-conversion-build.user.js')
+shutil.copy2(os.path.join(outDir, 'total-conversion-build.user.js'), distRoot)
 
 with io.open(os.path.join(outDir, '.build-timestamp'), 'w') as f:
     f.write(u"" + time.strftime('%Y-%m-%d %H:%M:%S UTC', utcTime))
@@ -311,13 +312,13 @@ for fn in glob.glob("plugins/*.user.js"):
     distDir = os.path.dirname(distPath)
     docPath = os.path.join(docRoot, fn.replace(".js",".md"))
     docDir = os.path.dirname(docPath)
-    verbose and print("...buildPath is " + buildPath)
-    verbose and print("...distPath is " + distPath)
+    verbose and print("   buildPath is " + buildPath)
+    verbose and print("   distPath is " + distPath)
     distFileModTime = os.path.getmtime(distPath) if os.path.exists(distPath) else 0
     buildFileModTime = os.path.getmtime(buildPath) if os.path.exists(buildPath) else 0
     script = readfile(fn)
     dependencyModTime = latestDependencyModTime(script)
-    verbose and print ("..." + fn + " " + lastModText(srcModTime) + ", last modified dependency on "
+    verbose and print ("   " + fn + " " + lastModText(srcModTime) + ", last modified dependency on "
         + lastModText(dependencyModTime) + ", build version " + lastModText(buildFileModTime))
     if (srcModTime > buildFileModTime or dependencyModTime > buildFileModTime):
         downloadUrl = distUrlBase and distUrlBase + '/' + fn.replace("\\","/") or 'none'
@@ -326,24 +327,24 @@ for fn in glob.glob("plugins/*.user.js"):
         script = doReplacements(script, downloadUrl=downloadUrl, updateUrl=updateUrl, pluginName=pluginName)
         saveScriptAndMeta(script, outDir, fn) # TODO: consider passing n buildPath
         if not os.path.exists(distDir):
-            verbose and print("...os.path.makedirs(" + distDir + ")")
+            verbose and print("   os.path.makedirs(" + distDir + ")")
             os.makedirs(distDir)
         shutil.copy2(buildPath, distPath)
         #shutil.copy2(buildPath.replace('.user.js', '.meta.js'), distPath.replace('.user.js', '.meta.js'))
         #jsdocFiles.append(os.path.join(cwd,os.path.join(outDir,fn)))
     else:
-        verbose and print ("...no need to build since distribution is older than dependencies")
+        verbose and print ("   no need to build since distribution is older than dependencies")
     if jsdoc2md != None:
         possibleJSDoc = re.search("/\*\*[ \t\n\r]{1}",script, re.MULTILINE)
         buildFileModTime = os.path.getmtime(buildPath) if os.path.exists(buildPath) else 0;
         docFileModTime = os.path.getmtime(docPath) if os.path.exists(docPath) else 0;
         if (possibleJSDoc != None and (buildFileModTime > docFileModTime)): # this approach allows doc to be created outside this build.py
             if not os.path.exists(docDir):
-                verbose and print("...os.path.makedirs(" + docDir + ")")
+                verbose and print("   os.path.makedirs(" + docDir + ")")
                 os.makedirs(docDir)
             #docCmd = jsdoc2md + " " + os.path.join(cwd,os.path.join(outDir,fn)) + " > " + os.path.join(cwd,os.path.join("docs", os.path.basename(fn).replace(".js",".md")))
             docCmd = jsdoc2md + " " + buildPath + " > " + docPath
-            verbose and print ("..." + docCmd)
+            verbose and print ("   " + docCmd)
             subprocess.call(docCmd)
     fileIndex = fileIndex + 1
 
