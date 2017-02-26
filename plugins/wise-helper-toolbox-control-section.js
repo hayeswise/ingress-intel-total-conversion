@@ -5,16 +5,9 @@
 ;(function () {
   "use strict";
   // Aggregate helpers in the window.helper object
-  if (typeof window.helper !== "function") {
-    window.helper = function () {};
+  if (typeof window.helper !== "object") {
+    window.helper = {};
   }
-  /**
-   * Toolbox Control Section namespace.
-   * @alias "window.helper.ToolboxControlSection"
-   * @variation 2
-   */
-  var self = window.helper.ToolboxControlSection;
-  self.version = "0.1.0";
 
   /**
    * ToolboxControlSection Class.  Provides a standardized way of adding toolbox controls and grouping controls in
@@ -34,23 +27,24 @@
    * @property {String} style Global CSS for the toolbox control section.  Set
    *  using `setStyle()`.
    */
-  self.ToolboxControlSection = function (content, controlSectionClass, controlClass) {
+  window.helper.ToolboxControlSection = function (content, controlSectionClass, controlClass) {
     this.controlSectionClass = controlSectionClass;
     this.controlClass = controlClass;
     this.merged = false;
     this.jQueryObj = jQuery('<div>').append(content).addClass(controlSectionClass);
   };
-
-  // Default style
-  self.ToolboxControlSection.defaultStyle = "div.wise-toolbox-control-section {color:#00C5FF;text-align:center;width:fit-content;border-top: 1px solid #20A8B1;border-bottom: 1px solid #20A8B1;}";
-  self.ToolboxControlSection.style = undefined;
+  // Properties
+  var self = window.helper.ToolboxControlSection;
+  self.version = "0.1.0";
+  self.defaultStyle = "div.wise-toolbox-control-section {color:#00C5FF;text-align:center;width:fit-content;border-top: 1px solid #20A8B1;border-bottom: 1px solid #20A8B1;}";
+  self.style = undefined;
   /**
    * See jQuery `.attr()` function.
    *
    * @returns {String}
    * @todo Consider removing this.
    */
-  self.ToolboxControlSection.prototype.attr = function (attributeNameOrAttributes, valueOrFunction) {
+  self.prototype.attr = function (attributeNameOrAttributes, valueOrFunction) {
     if (typeof valueOrFunction === 'undefined') {
       return this.jQueryObj.attr(attributeNameOrAttributes);
     } else {
@@ -81,7 +75,7 @@
    * </div>
    * ```
    */
-  self.ToolboxControlSection.prototype.mergeWithFamily = function () {
+  self.prototype.mergeWithFamily = function () {
     var controlFamily,
       that;
     if (!this.merged) {
@@ -112,12 +106,12 @@
    * Sets the documents's styling.  Will not add the style if previously used.
    * @param {String} [styling] CSS styles.
    */
-  self.ToolboxControlSection.prototype.setStyle = function (styling) {
+  self.prototype.setStyle = function (styling) {
     if (typeof styling === "undefined") {
-      styling = helpers.ToolboxControlSection.defaultStyle;
+      styling = self.defaultStyle;
     }
-    if (typeof helpers.ToolboxControlSection.style === 'undefined' || (helpers.ToolboxControlSection.style !== styling)) {
-      helpers.ToolboxControlSection.style = styling;
+    if (typeof self.style === 'undefined' || (self.style !== styling)) {
+      self.style = styling;
       jQuery("<style>")
         .prop("type", "text/css")
         .html(styling)
@@ -132,7 +126,7 @@
    * @example
    * $("#toolbox").append(new ToolboxControlSection(html, "myfamily-control-section", "myfamily-control").mergeWithFamily();
    */
-  self.ToolboxControlSection.prototype.valueOf = function () {
+  self.prototype.valueOf = function () {
     return this.jQueryObj;
   };
 }());

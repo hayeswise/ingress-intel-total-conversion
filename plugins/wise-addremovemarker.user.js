@@ -2,7 +2,7 @@
 // @id             iitc-plugin-add-remove-marker@hayeswise
 // @name           IITC plugin: Add and Remove Marker
 // @category       Layer
-// @version        1.2017.02.05
+// @version        1.2017.02.23
 // @namespace      https://github.com/hayeswise/ingress-intel-total-conversion
 // @description    Adds an Add Marker and Remove Marker map control and toolbox controls.
 // @updateURL      @@UPDATEURL@@
@@ -78,7 +78,7 @@
      * @type {RequiredPluginMetaData[]} Array of required plugin meta-data.
 	 */
     self.requiredPlugins = [{
-        object: window.plugin.drawTools,
+        pluginKey: "drawTools",
         name: "draw tools"
     }];
 
@@ -266,10 +266,10 @@
             '<i class="material-icons" style="font-size:16px;color:#ffce00;-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-ms-transform: rotate(1805deg);-o-transform: rotate(180deg);transform: rotate(180deg);">format_color_reset</i>' +
             ' Remove Marker</a>' +
             '</span>';
-        pluginControl = new window.helpers.ToolboxControlSection(controlsHtml, "wise-toolbox-control-section", "wise-toolbox-control");
+        pluginControl = new window.helper.ToolboxControlSection(controlsHtml, "wise-toolbox-control-section", "wise-toolbox-control");
         pluginControl.attr("id", self.spacename + "-controls");
+        pluginControl.setStyle();
         pluginControl = pluginControl.mergeWithFamily();
-        window.helpers.ToolboxControlSection.setStyle();
         return pluginControl;
     };
 
@@ -381,7 +381,7 @@
         ///////////////////////////////////////////////////////////////////////
         // Start
         ///////////////////////////////////////////////////////////////////////
-        if (!window.helpers.prerequisitePluginsInstalled(self.requiredPlugins, plugin_info.script.name)) {
+        if (!window.helper.requiredPlugins.alertIfNotInstalled(self.requiredPlugins, plugin_info.script.name)) {
             return;
         }
         // Link to Google Material icons.

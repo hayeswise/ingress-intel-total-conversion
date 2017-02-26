@@ -2,7 +2,7 @@
 // @id             iitc-plugin-portalsinpolygons@hayeswise
 // @name           IITC plugin: Portals-in-Polygons
 // @category       Layer
-// @version        1.@@DATETIMEVERSION@@.0
+// @version        1.2017.02.25
 // @namespace      https://github.com/hayeswise/ingress-intel-total-conversion
 // @description    Display a list of portals in, on on the perimeter of, polygons and circles, and on lines.  Use the layer group check boxes to filter the portals.
 // @updateURL      @@UPDATEURL@@
@@ -98,10 +98,10 @@
      * @type {RequiredPluginMetaData[]} Array of required plugin meta-data.
 	 */
     self.requiredPlugins = [{
-        object: window.plugin.drawTools,
+        pluginKey: "drawTools",
         name: "draw tools"
     }, {
-        object: window.plugin.portalslist,
+        pluginKey: "portalslist",
         name: "show list of portals"
     }];
 
@@ -527,10 +527,10 @@
         displayPortalsControl = '<span style="white-space:nowrap"><a id="portalsinpolygons-portalsOnMap" onclick="window.plugin.portalsinpolygons.displayPortals();false;" title="Display a list of portals.">Portals on Map</a></span>';
         controlsHtml = listPortalsInPolygonControl + '&nbsp;&#9679; ' + displayPortalsControl + '&nbsp;&#9679; ' + portalsToFrontControl;
 
-		pluginControl = new window.helpers.ToolboxControlSection(controlsHtml, "wise-toolbox-control-section", "wise-toolbox-control");
+		pluginControl = new window.helper.ToolboxControlSection(controlsHtml, "wise-toolbox-control-section", "wise-toolbox-control");
 		pluginControl.attr("id", self.spacename + ".controls");
+    pluginControl.setStyle();
 		pluginControl = pluginControl.mergeWithFamily();
-        window.helpers.ToolboxControlSection.setStyle();
 		return pluginControl;
     };
 
@@ -572,7 +572,7 @@
         var controls;
         self.version = (!!plugin_info ? plugin_info.script.version : "unknown");
 		console.log (fname + ": Start, version " + self.version);
-        if (!window.helpers.prerequisitePluginsInstalled(self.requiredPlugins, plugin_info.script.name)) {
+        if (!window.helper.requiredPlugins.alertIfNotInstalled(self.requiredPlugins, plugin_info.script.name)) {
             return;
         }
 		// Standard sytling for "wise" family of toolbox controls

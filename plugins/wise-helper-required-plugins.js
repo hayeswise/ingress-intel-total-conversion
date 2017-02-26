@@ -20,9 +20,10 @@
    * }
    */
   // Aggregate helpers in the window.helper object
-  if (typeof window.helper !== "function") {
-    window.helper = function () {};
+  if (typeof window.helper !== "object") {
+    window.helper = {};
   }
+  window.helper.requiredPlugins = {};
   /**
    * Required Plugins namespace.
    * @alias "window.helper.requiredPlugins"
